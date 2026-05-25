@@ -39,9 +39,9 @@ button,.btn{appearance:none;border:0;border-radius:14px;padding:12px 16px;backgr
     <p>Each hero has a special advantage.</p>
     <div class="hero-grid">
       <div class="hero-card"><img src="Mage.webp" alt="Mage"><h3>Mage</h3><p>2 free hints and stronger grammar magic.</p><button class="heroBtn" data-hero="Mage">Select Mage</button></div>
-      <div class="hero-card"><img src="https://github.com/eliemejiaa-tech/Aula-M-gica-Aprende-Espa-ol/blob/3b502f30b4ad98c023383efdae86ac577c36a7c8/healer.webp" alt="Healer"><h3>Healer</h3><p>Extra life and recovery after mistakes.</p><button class="heroBtn" data-hero="Healer">Select Healer</button></div>
-      <div class="hero-card"><img src="Fighther.jpg" alt="Fighter"><h3>Fighter</h3><p>Higher HP for challenge scenes.</p><button class="heroBtn" data-hero="Fighter">Select Fighter</button></div>
-      <div class="hero-card"><img src="adventurer.jpg" alt="Adventurer"><h3>Adventurer</h3><p>Finds hidden items and bonus XP.</p><button class="heroBtn" data-hero="Adventurer">Select Adventurer</button></div>
+      <div class="hero-card"><img src="healer.webp" alt="Healer"><h3>Healer</h3><p>Extra life and recovery after mistakes.</p><button class="heroBtn" data-hero="Healer">Select Healer</button></div>
+      <div class="hero-card"><img src="Fighther.webp" alt="Fighter"><h3>Fighter</h3><p>Higher HP for challenge scenes.</p><button class="heroBtn" data-hero="Fighter">Select Fighter</button></div>
+      <div class="hero-card"><img src="adventurer.webp" alt="Adventurer"><h3>Adventurer</h3><p>Finds hidden items and bonus XP.</p><button class="heroBtn" data-hero="Adventurer">Select Adventurer</button></div>
     </div>
   </div>
   <div id="mapScreen" class="screen panel">
@@ -55,7 +55,7 @@ button,.btn{appearance:none;border:0;border-radius:14px;padding:12px 16px;backgr
     <div class="topbar"><div class="chip" id="heroChip2"></div><div class="chip" id="chapterChip"></div></div>
     <div class="stats" id="statsBox"></div>
     <div class="scene">
-      <div class="scene-art"><img id="sceneImg" src="Mage.jpg" alt="scene"><div class="label" id="sceneLabel">Hall of Candles</div></div>
+      <div class="scene-art"><img id="sceneImg" src="Mage.webp" alt="scene"><div class="label" id="sceneLabel">Hall of Candles</div></div>
       <div>
         <div class="storybox" id="storyBox"></div>
         <div class="quizbox" id="quizBox" style="margin-top:14px">
@@ -73,7 +73,7 @@ button,.btn{appearance:none;border:0;border-radius:14px;padding:12px 16px;backgr
 const state={hero:'',hp:10,hints:2,xp:0,stars:0,visited:{welcome:false,classroom:false,map:false,cafeteria:false},sound:true,locked:false,currentRoom:null,currentQuestion:0,currentBranch:0,roomScore:0};
 const rooms={
   welcome:{
-    title:'Hall of Candles',img:'Mage.jpg',label:'Welcome Hall',
+    title:'Hall of Candles',img:'Mage.webp',label:'Welcome Hall',
     dialogue:[
       {npc:'Guardia: ¿Vienes a aprender magia?',correct:'Sí, vengo a aprender.',wrong:'No, vengo a dormir.'},
       {npc:'Guía: Pasa con cuidado.',correct:'Gracias.',wrong:'Yo soy candado.'}
@@ -89,7 +89,7 @@ const rooms={
     matchPairs:[['hola','hello'],['adiós','goodbye'],['libro','book'],['mesa','table']]
   },
   classroom:{
-    title:'Classroom of Ink',img:'healer.jpg',label:'Classroom',
+    title:'Classroom of Ink',img:'healer.webp',label:'Classroom',
     dialogue:[
       {npc:'Teacher: ¿Qué haces en clase?',correct:'Escucho y escribo.',wrong:'Como una silla.'},
       {npc:'Student: ¿Me ayudas?',correct:'Claro que sí.',wrong:'No, soy nube.'}
@@ -105,7 +105,7 @@ const rooms={
     dragWords:['yo','soy','estudiante']
   },
   map:{
-    title:'Map Corridor',img:'adventurer.jpg',label:'Map Corridor',
+    title:'Map Corridor',img:'adventurer.webp',label:'Map Corridor',
     dialogue:[
       {npc:'Map Spirit: ¿Quieres una pista?',correct:'Sí, por favor.',wrong:'No, soy sombrero.'},
       {npc:'Lantern: The east wing is open.',correct:'Voy al este.',wrong:'Voy al pan.'}
@@ -121,7 +121,7 @@ const rooms={
     matchPairs:[['izquierda','left'],['derecha','right'],['cerca','near'],['lejos','far']]
   },
   cafeteria:{
-    title:'School Cafeteria',img:'Fighther.jpg',label:'Cafeteria',
+    title:'School Cafeteria',img:'fighther.webp',label:'Cafeteria',
     dialogue:[
       {npc:'Chef: ¿Qué prefieres hoy?',correct:'Prefiero fruta.',wrong:'Prefiero una roca.'},
       {npc:'Helper: ¿Necesitas más?',correct:'Sí, gracias.',wrong:'No, soy escalera.'}
@@ -138,7 +138,7 @@ const rooms={
   }
 };
 const finalRoom={
-  title:'Tower of Exams',img:'adventurer.jpg',label:'Final Exam',
+  title:'Tower of Exams',img:'adventurer.webp',label:'Final Exam',
   dialogue:[
     {npc:'Headmaster: Demuestra tu poder.',correct:'Estoy listo.',wrong:'Soy una lámpara.'},
     {npc:'Headmaster: The school believes in you.',correct:'Gracias.',wrong:'Yo camino sopa.'}
