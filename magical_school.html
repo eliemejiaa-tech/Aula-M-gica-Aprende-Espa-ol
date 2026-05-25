@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Escuela de Magia: Aventura en Español</title>
+<style>
+:root{--bg1:#101528;--bg2:#31285f;--panel:rgba(8,10,22,.78);--line:rgba(255,216,107,.28);--gold:#ffd86b;--text:#fff7e6;--accent:#7ee7ff;--good:#7dff9b;--bad:#ff8b8b;--shadow:0 18px 40px rgba(0,0,0,.35)}
+*{box-sizing:border-box} html,body{height:100%} body{margin:0;font-family:Trebuchet MS,Verdana,sans-serif;background:radial-gradient(circle at top, #4b3a96 0%, #161b36 45%, #0b1021 100%);color:var(--text);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 20%, rgba(255,255,255,.10), transparent 18%),radial-gradient(circle at 80% 30%, rgba(255,216,107,.12), transparent 16%),radial-gradient(circle at 50% 70%, rgba(126,231,255,.10), transparent 18%);pointer-events:none;animation:twinkle 12s linear infinite alternate}
+@keyframes twinkle{from{opacity:.7;transform:translateY(0)}to{opacity:1;transform:translateY(-8px)}}
+#app{max-width:1200px;margin:0 auto;padding:20px;position:relative;z-index:1} .screen{display:none;animation:fadeIn .35s ease} .screen.active{display:block} @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.panel{background:var(--panel);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:22px} h1,h2,h3{color:var(--gold);margin:0 0 12px;text-shadow:0 0 10px rgba(255,216,107,.2)} p{line-height:1.6}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}.chip{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
+.hero-grid,.map-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.hero-card,.map-card{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:18px;padding:14px;text-align:center;transition:transform .2s ease, box-shadow .2s ease;cursor:pointer}.hero-card:hover,.map-card:hover{transform:translateY(-4px) scale(1.01);box-shadow:0 0 24px rgba(255,216,107,.18)}
+.hero-card img{width:100%;height:220px;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.12)}
+button,.btn{appearance:none;border:0;border-radius:14px;padding:12px 16px;background:linear-gradient(180deg,#6b4eff,#4a2bbf);color:#fff;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block;transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;box-shadow:0 8px 18px rgba(0,0,0,.22)} button:hover,.btn:hover{filter:brightness(1.08);transform:translateY(-1px)} button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.choice{display:block;width:100%;text-align:left;background:rgba(255,255,255,.08);margin:8px 0;border:1px solid rgba(255,255,255,.08);white-space:normal;line-height:1.35;min-height:48px} .choice:hover{background:rgba(255,255,255,.14)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0}.stat{background:rgba(255,255,255,.06);border-left:4px solid var(--gold);padding:10px 12px;border-radius:12px}
+.scene{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:18px;align-items:start}.scene-art{border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:var(--shadow);min-height:300px;background:rgba(255,255,255,.04);position:relative}.scene-art img{width:100%;height:100%;object-fit:cover;display:block}.scene-art .label{position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.45);padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.15)}
+.storybox,.quizbox{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;width:100%;min-width:0}.good{color:var(--good);font-weight:800}.bad{color:var(--bad);font-weight:800}.small{font-size:.95rem}.shake{animation:shake .3s linear 1}@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.sparkle{position:absolute;width:10px;height:10px;background:rgba(255,255,255,.9);border-radius:50%;box-shadow:0 0 12px rgba(255,255,255,.9);animation:floatUp 2.8s linear infinite;pointer-events:none} @keyframes floatUp{from{transform:translateY(40px) scale(.6);opacity:0}20%{opacity:1}to{transform:translateY(-260px) scale(1.3);opacity:0}}
+#dialogueBox,#questionBox,#feedbackBox{width:100%;word-break:break-word;line-height:1.5} #dialogueBox{min-height:54px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px} #questionBox{min-height:56px;margin-bottom:8px} #choicesBox{display:flex;flex-direction:column;gap:10px} #choicesBox .choice{margin:0}
+.footer{margin-top:14px;opacity:.8;font-size:.92rem} @media (max-width: 900px){.scene{grid-template-columns:1fr}.scene-art{min-height:240px}}
+#miniArea{display:none;margin-top:12px} .mini-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px} .mini-box{background:rgba(255,255,255,.05);border-radius:14px;border:1px solid rgba(255,255,255,.08);padding:12px;min-height:220px}
+.token,.match-item{display:inline-block;padding:10px 12px;margin:6px;background:rgba(255,255,255,.12);border-radius:12px;border:1px solid rgba(255,255,255,.12);cursor:grab} .slot,.drop-zone{min-height:48px;margin:10px 0;border-radius:12px;border:2px dashed rgba(255,255,255,.2);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;padding:8px} .filled{border-style:solid}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="startScreen" class="screen active panel">
+    <div class="topbar"><div class="chip">Web RPG • Branching Story</div><div class="chip">Quest Map Mode</div></div>
+    <h1>Escuela de Magia: Aventura en Español</h1>
+    <p>Choose your hero, select room order on the map, and complete branching NPC dialogue, five questions per room, plus mini-games inside each room.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><button id="startBtn">Start Adventure</button><button id="soundBtn">Sound: On</button></div>
+  </div>
+  <div id="heroScreen" class="screen panel">
+    <h2>Choose Your Character</h2>
+    <p>Each hero has a special advantage.</p>
+    <div class="hero-grid">
+      <div class="hero-card"><img src="Mage.jpg" alt="Mage"><h3>Mage</h3><p>2 free hints and stronger grammar magic.</p><button class="heroBtn" data-hero="Mage">Select Mage</button></div>
+      <div class="hero-card"><img src="healer.jpg" alt="Healer"><h3>Healer</h3><p>Extra life and recovery after mistakes.</p><button class="heroBtn" data-hero="Healer">Select Healer</button></div>
+      <div class="hero-card"><img src="Fighther.jpg" alt="Fighter"><h3>Fighter</h3><p>Higher HP for challenge scenes.</p><button class="heroBtn" data-hero="Fighter">Select Fighter</button></div>
+      <div class="hero-card"><img src="adventurer.jpg" alt="Adventurer"><h3>Adventurer</h3><p>Finds hidden items and bonus XP.</p><button class="heroBtn" data-hero="Adventurer">Select Adventurer</button></div>
+    </div>
+  </div>
+  <div id="mapScreen" class="screen panel">
+    <div class="topbar"><div class="chip" id="heroChip"></div><div class="chip" id="progressChip"></div></div>
+    <h2>Quest Map</h2>
+    <p>Choose the order of rooms. You can visit the rooms in any sequence.</p>
+    <div class="map-grid" id="mapGrid"></div>
+    <div class="footer">Complete all four rooms to unlock the final exam.</div>
+  </div>
+  <div id="gameScreen" class="screen panel">
+    <div class="topbar"><div class="chip" id="heroChip2"></div><div class="chip" id="chapterChip"></div></div>
+    <div class="stats" id="statsBox"></div>
+    <div class="scene">
+      <div class="scene-art"><img id="sceneImg" src="Mage.jpg" alt="scene"><div class="label" id="sceneLabel">Hall of Candles</div></div>
+      <div>
+        <div class="storybox" id="storyBox"></div>
+        <div class="quizbox" id="quizBox" style="margin-top:14px">
+          <div id="dialogueBox"></div>
+          <div id="questionBox"></div>
+          <div id="choicesBox"></div>
+          <div id="feedbackBox" class="small" style="margin-top:10px"></div>
+          <div id="miniArea"><div class="mini-layout" id="miniLayout"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const state={hero:'',hp:10,hints:2,xp:0,stars:0,visited:{welcome:false,classroom:false,map:false,cafeteria:false},sound:true,locked:false,currentRoom:null,currentQuestion:0,currentBranch:0,roomScore:0};
+const rooms={
+  welcome:{
+    title:'Hall of Candles',img:'Mage.jpg',label:'Welcome Hall',
+    dialogue:[
+      {npc:'Guardia: ¿Vienes a aprender magia?',correct:'Sí, vengo a aprender.',wrong:'No, vengo a dormir.'},
+      {npc:'Guía: Pasa con cuidado.',correct:'Gracias.',wrong:'Yo soy candado.'}
+    ],
+    questions:[
+      {q:'Brilla una luz en la entrada. What should you say first?',choices:[{t:'Hola.',ok:true},{t:'Puerta.',ok:false},{t:'Libro.',ok:false}]},
+      {q:'Choose the correct reply to “¿Cómo estás?”',choices:[{t:'Estoy bien.',ok:true},{t:'Soy una mesa.',ok:false},{t:'Tengo azul.',ok:false}]},
+      {q:'Pick the correct subject pronoun for “I”.',choices:[{t:'Yo',ok:true},{t:'Tú',ok:false},{t:'Ellos',ok:false}]},
+      {q:'Complete: “Yo ___ estudiante.”',choices:[{t:'soy',ok:true},{t:'eres',ok:false},{t:'somos',ok:false}]},
+      {q:'Choose the polite goodbye.',choices:[{t:'Adiós, profesora.',ok:true},{t:'Gracias, ventana.',ok:false},{t:'Más pan, por favor.',ok:false}]}
+    ],
+    mini:'match',
+    matchPairs:[['hola','hello'],['adiós','goodbye'],['libro','book'],['mesa','table']]
+  },
+  classroom:{
+    title:'Classroom of Ink',img:'healer.jpg',label:'Classroom',
+    dialogue:[
+      {npc:'Teacher: ¿Qué haces en clase?',correct:'Escucho y escribo.',wrong:'Como una silla.'},
+      {npc:'Student: ¿Me ayudas?',correct:'Claro que sí.',wrong:'No, soy nube.'}
+    ],
+    questions:[
+      {q:'Complete: “Tenemos ___ libros.”',choices:[{t:'dos',ok:true},{t:'verde',ok:false},{t:'rápido',ok:false}]},
+      {q:'Choose the plural.',choices:[{t:'mesas',ok:true},{t:'mesa',ok:false},{t:'mesita',ok:false}]},
+      {q:'Pick the correct verb.',choices:[{t:'leer',ok:true},{t:'libro',ok:false},{t:'mesa',ok:false}]},
+      {q:'Choose the sentence in present tense.',choices:[{t:'Yo estudio español.',ok:true},{t:'Ayer estudié español.',ok:false},{t:'Mañana estudié español.',ok:false}]},
+      {q:'What is the classroom object?',choices:[{t:'la pizarra',ok:true},{t:'el correr',ok:false},{t:'la cantar',ok:false}]}
+    ],
+    mini:'drag',
+    dragWords:['yo','soy','estudiante']
+  },
+  map:{
+    title:'Map Corridor',img:'adventurer.jpg',label:'Map Corridor',
+    dialogue:[
+      {npc:'Map Spirit: ¿Quieres una pista?',correct:'Sí, por favor.',wrong:'No, soy sombrero.'},
+      {npc:'Lantern: The east wing is open.',correct:'Voy al este.',wrong:'Voy al pan.'}
+    ],
+    questions:[
+      {q:'Where is the library?',choices:[{t:'Está a la izquierda.',ok:true},{t:'Está feliz.',ok:false},{t:'Está un libro.',ok:false}]},
+      {q:'Choose the correct direction word.',choices:[{t:'derecha',ok:true},{t:'pan',ok:false},{t:'feliz',ok:false}]},
+      {q:'Complete: “La torre está ___ de la escuela.”',choices:[{t:'cerca',ok:true},{t:'comer',ok:false},{t:'azul',ok:false}]},
+      {q:'Pick the location sentence.',choices:[{t:'El baño está al fondo.',ok:true},{t:'El baño es una canción.',ok:false},{t:'El baño corre rápido.',ok:false}]},
+      {q:'Which word means “near”?',choices:[{t:'cerca',ok:true},{t:'lejos',ok:false},{t:'alto',ok:false}]}
+    ],
+    mini:'match',
+    matchPairs:[['izquierda','left'],['derecha','right'],['cerca','near'],['lejos','far']]
+  },
+  cafeteria:{
+    title:'School Cafeteria',img:'Fighther.jpg',label:'Cafeteria',
+    dialogue:[
+      {npc:'Chef: ¿Qué prefieres hoy?',correct:'Prefiero fruta.',wrong:'Prefiero una roca.'},
+      {npc:'Helper: ¿Necesitas más?',correct:'Sí, gracias.',wrong:'No, soy escalera.'}
+    ],
+    questions:[
+      {q:'Choose the food word.',choices:[{t:'manzana',ok:true},{t:'mesa',ok:false},{t:'puerta',ok:false}]},
+      {q:'Complete: “Me gusta el ___.”',choices:[{t:'pan',ok:true},{t:'azul',ok:false},{t:'correr',ok:false}]},
+      {q:'Choose the correct preference sentence.',choices:[{t:'Me gusta el arroz.',ok:true},{t:'Me gusta la silla corre.',ok:false},{t:'Me gusta comer azul.',ok:false}]},
+      {q:'Pick the drink.',choices:[{t:'agua',ok:true},{t:'ventana',ok:false},{t:'libro',ok:false}]},
+      {q:'Choose the polite request.',choices:[{t:'Quiero sopa, por favor.',ok:true},{t:'Yo sopa ventana.',ok:false},{t:'Sopa soy.',ok:false}]}
+    ],
+    mini:'drag',
+    dragWords:['yo','quiero','agua']
+  }
+};
+const finalRoom={
+  title:'Tower of Exams',img:'adventurer.jpg',label:'Final Exam',
+  dialogue:[
+    {npc:'Headmaster: Demuestra tu poder.',correct:'Estoy listo.',wrong:'Soy una lámpara.'},
+    {npc:'Headmaster: The school believes in you.',correct:'Gracias.',wrong:'Yo camino sopa.'}
+  ],
+  questions:[
+    {q:'Choose the best meaning: “Estoy feliz porque gané.”',choices:[{t:'I am happy because I won.',ok:true},{t:'I am a chair because I won.',ok:false},{t:'I am blue because I won.',ok:false}]},
+    {q:'Pick the correct past tense.',choices:[{t:'Ayer estudié español.',ok:true},{t:'Ayer estudio español.',ok:false},{t:'Ayer estudiar español.',ok:false}]},
+    {q:'Choose the best future sentence.',choices:[{t:'Mañana voy a leer.',ok:true},{t:'Mañana leo ayer.',ok:false},{t:'Mañana leí después.',ok:false}]},
+    {q:'Select the correct connector.',choices:[{t:'porque',ok:true},{t:'mesa',ok:false},{t:'verde',ok:false}]},
+    {q:'Choose the final review sentence.',choices:[{t:'Hoy aprendí mucho.',ok:true},{t:'Hoy soy una puerta.',ok:false},{t:'Hoy comí una nube azul.',ok:false}]}
+  ],
+  mini:'match',
+  matchPairs:[['hola','hello'],['libro','book'],['mesa','table'],['agua','water']]
+};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function show(id){$$('.screen').forEach(x=>x.classList.remove('active')); $(id).classList.add('active');}
+function beep(type='good'){ if(!state.sound) return; try{const ctx=new (window.AudioContext||window.webkitAudioContext)(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.type='sine'; o.frequency.value= type==='good'? 660 : 220; g.gain.value=.04; o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+.12);}catch(e){} }
+function sparkleBurst(){const box=$('#gameScreen'); for(let i=0;i<8;i++){const sp=document.createElement('div'); sp.className='sparkle'; sp.style.left=(10+Math.random()*80)+'%'; sp.style.bottom='30px'; sp.style.animationDelay=(Math.random()*0.4)+'s'; box.appendChild(sp); setTimeout(()=>sp.remove(),3200);} }
+function updateTop(){ $('#heroChip').textContent=`Hero: ${state.hero||'-'}`; $('#heroChip2').textContent=`Hero: ${state.hero||'-'}`; $('#progressChip').textContent=`Rooms done: ${Object.values(state.visited).filter(Boolean).length}/4`; $('#chapterChip').textContent= state.currentRoom ? `Room: ${state.currentRoom}` : 'Room: -'; }
+function updateStats(){ $('#statsBox').innerHTML=[['HP',state.hp],['Hints',state.hints],['XP',state.xp],['Stars',state.stars],['Visited',Object.values(state.visited).filter(Boolean).length]].map(([k,v])=>`<div class="stat">${k}: <b>${v}</b></div>`).join(''); updateTop(); }
+function openMap(){show('#mapScreen'); renderMap();}
+function renderMap(){ const grid=$('#mapGrid'); grid.innerHTML=''; const keys=['welcome','classroom','map','cafeteria']; keys.forEach(key=>{const done=state.visited[key]; const c=document.createElement('div'); c.className='map-card '+(done?'room-done':'room-available'); c.innerHTML=`<h3>${key==='welcome'?'Welcome Hall':key==='classroom'?'Classroom':key==='map'?'Map Corridor':'Cafeteria'}</h3><div class='room-tag'>${done?'Completed':'Available'}</div><button ${done?'disabled':''}>Enter Room</button>`; c.querySelector('button').onclick=()=>openRoom(key); grid.appendChild(c);}); const allDone=Object.values(state.visited).every(Boolean); const finalCard=document.createElement('div'); finalCard.className='map-card '+(allDone?'room-available':'room-locked'); finalCard.innerHTML=`<h3>Tower of Exams</h3><div class='room-tag'>${allDone?'Unlocked':'Complete all rooms first'}</div><button ${allDone?'':'disabled'}>Enter Final Exam</button>`; finalCard.querySelector('button').onclick=()=>{if(allDone) openRoom('final')}; grid.appendChild(finalCard); updateTop(); }
+function clearRoomUI(){ $('#dialogueBox').innerHTML=''; $('#questionBox').innerHTML=''; $('#choicesBox').innerHTML=''; $('#feedbackBox').innerHTML=''; $('#miniArea').style.display='none'; $('#miniLayout').innerHTML=''; }
+function getRoom(key){ return key==='final' ? finalRoom : rooms[key]; }
+function openRoom(key){ state.currentRoom=key; state.currentQuestion=0; state.currentBranch=0; state.roomScore=0; show('#gameScreen'); clearRoomUI(); const r=getRoom(key); $('#sceneImg').src=r.img; $('#sceneLabel').textContent=r.label; $('#storyBox').innerHTML=`<h3>${r.title}</h3><p>${key==='final'?'Final challenge: 5 questions and a mini-game.':'This room has 2 NPC dialogue choices, 5 questions, and a mini-game.'}</p>`; renderDialogue(); updateStats(); }
+function renderDialogue(){ const r=getRoom(state.currentRoom); if(state.currentBranch < r.dialogue.length){ const d=r.dialogue[state.currentBranch]; $('#dialogueBox').innerHTML=`<b>NPC:</b> ${d.npc}`; $('#questionBox').innerHTML=''; $('#choicesBox').innerHTML=''; [ {t:d.correct,ok:true}, {t:d.wrong,ok:false} ].forEach(ch=>{ const b=document.createElement('button'); b.className='choice'; b.textContent=ch.t; b.onclick=()=>{ if(ch.ok){ state.xp+=1; state.stars+=1; beep('good'); $('#feedbackBox').innerHTML='<span class="good">Dialogue choice correct.</span>'; state.currentBranch++; updateStats(); renderDialogue(); } else { state.hp-=1; beep('bad'); $('#feedbackBox').innerHTML='<span class="bad">Dialogue choice incorrect.</span>'; updateStats(); if(state.hp<=0) gameOver(); } }; $('#choicesBox').appendChild(b); }); } else { renderQuestion(); } }
+function renderQuestion(){ const r=getRoom(state.currentRoom); if(state.currentQuestion < 5){ const q=r.questions[state.currentQuestion]; $('#dialogueBox').innerHTML=''; $('#questionBox').innerHTML=`<b>Question ${state.currentQuestion+1}/5:</b> ${q.q}`; $('#choicesBox').innerHTML=''; q.choices.forEach(ch=>{ const b=document.createElement('button'); b.className='choice'; b.textContent=ch.t; b.onclick=()=>{ if(ch.ok){ state.xp+=1; state.stars+=1; state.roomScore+=1; beep('good'); sparkleBurst(); $('#feedbackBox').innerHTML='<span class="good">Correct!</span>'; state.currentQuestion++; updateStats(); renderQuestion(); } else { state.hp-=1; beep('bad'); $('#feedbackBox').innerHTML='<span class="bad">Incorrect. Try again.</span>'; updateStats(); if(state.hp<=0) gameOver(); } }; $('#choicesBox').appendChild(b); }); } else { renderMini(); } }
+function renderMini(){ const r=getRoom(state.currentRoom); $('#dialogueBox').innerHTML=''; $('#questionBox').innerHTML=`<b>Mini-game:</b> ${r.mini==='match'?'Match the words.':'Build the sentence.'}`; $('#choicesBox').innerHTML=''; $('#miniArea').style.display='block'; $('#miniLayout').innerHTML=''; if(r.mini==='match'){ $('#miniLayout').innerHTML=`<div class='mini-box'><h3>Words</h3><div id='leftBank'>${r.matchPairs.map(p=>`<div class='match-item' draggable='true' data-key='${p[0]}'>${p[0]}</div>`).join('')}</div></div><div class='mini-box'><h3>Meanings</h3>${r.matchPairs.map(p=>`<div class='drop-zone' data-key='${p[0]}'>${p[1]}</div>`).join('')}</div>`; setMatchDnD(()=>finishRoom()); } else { $('#miniLayout').innerHTML=`<div class='mini-box'><h3>Word Bank</h3><div id='bankTokens'>${r.dragWords.map(t=>`<span class='token' draggable='true' data-word='${t}'>${t}</span>`).join('')}</div></div><div class='mini-box'><h3>Sentence</h3><div id='slots'>${r.dragWords.map((_,i)=>`<div class='slot' data-index='${i}'>___</div>`).join('')}</div><button id='checkSentenceBtn' class='choice'>Check Sentence</button></div>`; setSentenceDnD(()=>finishRoom()); } }
+function setMatchDnD(doneCb){ let dragKey=null; $$('#leftBank .match-item').forEach(it=>it.addEventListener('dragstart',()=>dragKey=it.dataset.key)); $$('#miniArea .drop-zone').forEach(z=>{z.addEventListener('dragover',e=>e.preventDefault()); z.addEventListener('drop',e=>{e.preventDefault(); const correct=z.dataset.key===dragKey; if(correct && !z.dataset.done){ z.dataset.done='1'; z.classList.add('filled'); z.textContent+=' ✓'; state.xp+=1; state.stars+=1; beep('good'); sparkleBurst(); updateStats(); if($$('#miniArea .drop-zone').filter(x=>x.dataset.done).length===4){ $('#feedbackBox').innerHTML='<span class="good">Mini-game complete!</span>'; doneCb(); } } else if(!correct){ state.hp-=1; beep('bad'); $('#feedbackBox').innerHTML='<span class="bad">Wrong match. Try again.</span>'; updateStats(); if(state.hp<=0) gameOver(); } }); }); }
+function setSentenceDnD(doneCb){ let dragWord=null; $$('#bankTokens .token').forEach(t=>t.addEventListener('dragstart',()=>dragWord=t.dataset.word)); $$('#slots .slot').forEach(slot=>{slot.addEventListener('dragover',e=>e.preventDefault()); slot.addEventListener('drop',e=>{e.preventDefault(); if(dragWord && slot.textContent==='___'){slot.textContent=dragWord; slot.dataset.word=dragWord; slot.classList.add('filled');}});}); $('#checkSentenceBtn').onclick=()=>{ const words=$$('#slots .slot').map(s=>s.dataset.word||''); const ok=words.join(' ')==='yo soy estudiante' || words.join(' ')==='yo quiero agua'; if(ok){ state.xp+=2; state.stars+=1; beep('good'); sparkleBurst(); $('#feedbackBox').innerHTML='<span class="good">Sentence correct!</span>'; updateStats(); doneCb(); } else { state.hp-=1; beep('bad'); $('#feedbackBox').innerHTML='<span class="bad">Not quite. Try the suggested sentence order.</span>'; updateStats(); if(state.hp<=0) gameOver(); } }; }
+function finishRoom(){ state.visited[state.currentRoom]=true; $('#feedbackBox').innerHTML='<span class="good">Room cleared! Returning to the map.</span>'; updateStats(); setTimeout(()=>{ renderMap(); openMap(); },700); }
+function gameOver(){ state.locked=true; $('#choicesBox').innerHTML=''; $('#feedbackBox').innerHTML='<span class="bad">Game over. Refresh to try again.</span>'; }
+$('#startBtn').onclick=()=>show('#heroScreen'); $('#soundBtn').onclick=()=>{state.sound=!state.sound; $('#soundBtn').textContent='Sound: '+(state.sound?'On':'Off')}; $$('.heroBtn').forEach(b=>b.onclick=()=>{state.hero=b.dataset.hero; state.hp=10; state.hints=2; state.xp=0; state.stars=0; state.visited={welcome:false,classroom:false,map:false,cafeteria:false}; state.locked=false; if(state.hero==='Mage') state.hints=4; if(state.hero==='Healer') state.hp=11; if(state.hero==='Fighter') state.hp=12; if(state.hero==='Adventurer') state.xp=1; openMap(); beep('good'); sparkleBurst();}); updateStats(); updateTop();
+</script>
+</body>
+</html>
